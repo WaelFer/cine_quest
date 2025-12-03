@@ -1,0 +1,53 @@
+name: cine_quest
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Default icon set
+  cupertino_icons: ^1.0.8
+
+  # --- CineQuest Dependencies (Added) ---
+  
+  # V4: For connecting to TMDB API
+  http: ^1.2.0
+  
+  # V6: For State Management (The "Far Propagation" tool)
+  flutter_riverpod: ^2.5.1
+  
+  # V3: For saving Favorites to the device
+  shared_preferences: ^2.2.2
+  
+  # V7: For better images and fonts
+  cached_network_image: ^3.3.1
+  google_fonts: ^6.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0 # Changed to 3.0.0 to match your SDK version safely
+# Added for generating app icons and splash screens
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.3.1
+# Configuration for the App Icon
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo.png"
+  min_sdk_android: 21
+
+# Configuration for the Splash Screen
+flutter_native_splash:
+  color: "#121212" # Dark background
+  image: "assets/logonbg.png"
+  android_12:
+    color: "#121212"
+    image: "assets/logonbg.png"
+flutter:
+  uses-material-design: true
