@@ -49,7 +49,6 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
-  // Renamed to _performSearch to separate logic
   void _performSearch(String query) async {
     setState(() {
       _isLoading = true;
@@ -57,7 +56,17 @@ class _SearchScreenState extends State<SearchScreen> {
     });
 
     try {
-      final movies = await _apiService.searchMovies(query);
+      // 1. Get raw results from API
+      List<dynamic> movies = await _apiService.searchMovies(query);
+
+      // 2. SORTING LOGIC: Best Rated First
+      // 'b' minus 'a' gives descending order (10 -> 0)
+      movies.sort((a, b) {
+        final double ratingA = (a['vote_average'] ?? 0).toDouble();
+        final double ratingB = (b['vote_average'] ?? 0).toDouble();
+        return ratingB.compareTo(ratingA);
+      });
+
       setState(() {
         _searchResults = movies;
         _isLoading = false;
