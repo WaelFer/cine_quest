@@ -1,3 +1,4 @@
+import 'dart:async'; // Required for the Timer
 import 'package:flutter/material.dart';
 import '../../data/api_service.dart';
 import '../widgets/movie_card.dart';
@@ -15,25 +16,53 @@ class _SearchScreenState extends State<SearchScreen> {
 
   List<dynamic> _searchResults = [];
   bool _isLoading = false;
-  bool _hasError = false; // New state variable for errors
+  bool _hasError = false;
 
-  void _search() async {
-    if (_controller.text.isEmpty) return;
+  // The Timer for "Debouncing" (waiting before searching)
+  Timer? _debounce;
 
-    // Reset states before starting
+  @override
+  void dispose() {
+    // Cancel the timer when we leave the screen to stop memory leaks
+    _debounce?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  // This function runs every time you type a letter
+  void _onSearchChanged(String query) {
+    // 1. Cancel the previous timer (if the user is still typing)
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    // 2. Start a new timer for 500ms (0.5 seconds)
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      // 3. If user stopped typing for 500ms, run the search
+      if (query.isNotEmpty) {
+        _performSearch(query);
+      } else {
+        // If text is empty, clear results
+        setState(() {
+          _searchResults = [];
+          _hasError = false;
+        });
+      }
+    });
+  }
+
+  // Renamed to _performSearch to separate logic
+  void _performSearch(String query) async {
     setState(() {
       _isLoading = true;
       _hasError = false;
     });
 
     try {
-      final movies = await _apiService.searchMovies(_controller.text);
+      final movies = await _apiService.searchMovies(query);
       setState(() {
         _searchResults = movies;
         _isLoading = false;
       });
     } catch (e) {
-      // If it fails, show the Error Screen
       setState(() {
         _isLoading = false;
         _hasError = true;
@@ -48,22 +77,28 @@ class _SearchScreenState extends State<SearchScreen> {
         title: TextField(
           controller: _controller,
           style: const TextStyle(color: Colors.white),
+          // Call our new function whenever text changes
+          onChanged: _onSearchChanged,
           decoration: InputDecoration(
             hintText: 'Search movies (e.g., Matrix)...',
             hintStyle: const TextStyle(color: Colors.grey),
             border: InputBorder.none,
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.search, color: Colors.white),
-              onPressed: _search,
-            ),
+            // Clear button instead of Search button
+            suffixIcon: _controller.text.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(Icons.clear, color: Colors.white),
+                    onPressed: () {
+                      _controller.clear();
+                      _onSearchChanged(''); // Clear results
+                    },
+                  )
+                : const Icon(Icons.search, color: Colors.grey),
           ),
-          onSubmitted: (_) => _search(),
         ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _hasError
-          // --- ERROR UI (Matches Home & Watchlist) ---
           ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -73,7 +108,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   const Text("No Internet Connection", style: TextStyle(fontSize: 18, color: Colors.grey)),
                   const SizedBox(height: 16),
                   ElevatedButton.icon(
-                    onPressed: _search, // Retry the search with existing text
+                    // Retry with current text
+                    onPressed: () => _performSearch(_controller.text),
                     icon: const Icon(Icons.refresh),
                     label: const Text("Retry"),
                     style: ElevatedButton.styleFrom(
@@ -84,10 +120,16 @@ class _SearchScreenState extends State<SearchScreen> {
                 ],
               ),
             )
-          // -------------------------------------------
           : _searchResults.isEmpty
-          ? const Center(
-              child: Text("Type a movie name to search", style: TextStyle(color: Colors.grey)),
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.search, size: 64, color: Colors.grey[800]),
+                  const SizedBox(height: 16),
+                  const Text("Type to search movies...", style: TextStyle(color: Colors.grey)),
+                ],
+              ),
             )
           : GridView.builder(
               padding: const EdgeInsets.all(10),
