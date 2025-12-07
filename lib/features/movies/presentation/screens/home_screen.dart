@@ -19,7 +19,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadMovies();
   }
 
-  // Separate function to load movies
   void _loadMovies() {
     setState(() {
       _moviesFuture = _apiService.getTrendingMovies();

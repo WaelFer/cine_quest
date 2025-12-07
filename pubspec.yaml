@@ -15,16 +15,16 @@ dependencies:
 
   # --- CineQuest Dependencies (Added) ---
   
-  # V4: For connecting to TMDB API
+  # For connecting to TMDB API
   http: ^1.2.0
   
-  # V6: For State Management (The "Far Propagation" tool)
+  # For State Management (The "Far Propagation" tool)
   flutter_riverpod: ^2.5.1
   
-  # V3: For saving Favorites to the device
+  # For saving Favorites to the device
   shared_preferences: ^2.2.2
   
-  # V7: For better images and fonts
+  # For better images and fonts
   cached_network_image: ^3.3.1
   google_fonts: ^6.1.0
 

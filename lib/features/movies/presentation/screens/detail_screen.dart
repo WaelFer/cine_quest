@@ -21,7 +21,7 @@ class DetailScreen extends ConsumerWidget {
 
     final backdropUrl = backdropPath != null ? 'https://image.tmdb.org/t/p/w780$backdropPath' : posterUrl;
 
-    // 2. WATCH THE STATE (Criterion V6)
+    // 2. WATCH THE STATE
     final watchlist = ref.watch(watchlistProvider);
     final isFavorite = watchlist.contains(movieId);
 

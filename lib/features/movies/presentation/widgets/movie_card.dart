@@ -17,7 +17,6 @@ class MovieCard extends StatelessWidget {
     // Wrap everything in GestureDetector to detect clicks
     return GestureDetector(
       onTap: () {
-        // NAVIGATE to Detail Screen (Criterion V2)
         Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(movie: movie)));
       },
       child: Card(

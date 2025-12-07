@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
-  // We wrap the app in ProviderScope to enable state management (Criterion V6)
   runApp(const ProviderScope(child: CineQuestApp()));
 }
 
@@ -15,8 +14,8 @@ class CineQuestApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'CineQuest',
-      debugShowCheckedModeBanner: false, // Removes the little "Debug" banner
-      // THEME SETUP (Criterion V7 - Design)
+      debugShowCheckedModeBanner: false,
+
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color(0xFF121212), // Very dark grey background
         // Use Google Fonts for the whole app
@@ -32,7 +31,6 @@ class CineQuestApp extends StatelessWidget {
         ),
       ),
 
-      // The first screen the user sees
       home: const MainScreen(),
     );
   }

@@ -19,10 +19,8 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Show the correct page based on index
       body: _pages[_currentIndex],
 
-      // The Navigation Bar (Criterion V2)
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
