@@ -81,4 +81,27 @@ class ApiService {
       throw Exception('Error: $e');
     }
   }
+
+  // Fetch video keys (Youtube IDs)
+  Future<String?> getMovieTrailer(String movieId) async {
+    final Uri url = Uri.parse('$_baseUrl/movie/$movieId/videos?api_key=$_apiKey');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final results = data['results'] as List;
+
+        // Find the first video that is a "Trailer" and hosted on "YouTube"
+        final trailer = results.firstWhere(
+          (video) => video['type'] == 'Trailer' && video['site'] == 'YouTube',
+          orElse: () => null,
+        );
+
+        return trailer?['key']; // Returns the YouTube ID (e.g., "d9MyW72ELq0")
+      }
+    } catch (e) {
+      // Ignore errors, just return null (no trailer found)
+    }
+    return null;
+  }
 }

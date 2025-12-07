@@ -14,7 +14,7 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # --- CineQuest Dependencies (Added) ---
-  
+  youtube_player_flutter: ^9.0.1
   # For connecting to TMDB API
   http: ^1.2.0
   

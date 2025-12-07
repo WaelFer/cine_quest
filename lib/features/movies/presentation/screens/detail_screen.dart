@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../watchlist/logic/watchlist_provider.dart';
+import '../../data/api_service.dart'; // Import API Service
+import 'trailer_player_screen.dart'; // Import the Player Screen
 
 class DetailScreen extends ConsumerWidget {
   final Map<String, dynamic> movie;
@@ -19,7 +21,6 @@ class DetailScreen extends ConsumerWidget {
         ? 'https://image.tmdb.org/t/p/w500$posterPath'
         : 'https://via.placeholder.com/500x750';
 
-    // Use backdrop if available, otherwise fall back to poster
     final backdropUrl = backdropPath != null ? 'https://image.tmdb.org/t/p/w780$backdropPath' : posterUrl;
 
     // 2. WATCH THE STATE
@@ -41,9 +42,7 @@ class DetailScreen extends ConsumerWidget {
                   height: 300,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  // Show a solid dark color while loading
                   placeholder: (context, url) => Container(color: Colors.grey[900]),
-                  // --- NEW: Better Error UI ---
                   errorWidget: (context, url, error) => Container(
                     color: Colors.grey[900],
                     child: const Center(
@@ -57,9 +56,7 @@ class DetailScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  // ---------------------------
                 ),
-                // Gradient for text readability
                 Positioned.fill(
                   child: Container(
                     decoration: const BoxDecoration(
@@ -67,7 +64,7 @@ class DetailScreen extends ConsumerWidget {
                         colors: [Colors.black, Colors.transparent],
                         begin: Alignment.bottomCenter,
                         end: Alignment.topCenter,
-                        stops: [0.0, 0.6], // Tweak gradient to not hide the error message too much
+                        stops: [0.0, 0.6],
                       ),
                     ),
                   ),
@@ -108,6 +105,50 @@ class DetailScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 20),
 
+                  // --- NEW: WATCH TRAILER BUTTON ---
+                  Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 400),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () async {
+                            // 1. Fetch Trailer ID
+                            final api = ApiService();
+                            // Show loading indicator logic could go here
+                            final trailerId = await api.getMovieTrailer(movieId);
+
+                            if (context.mounted) {
+                              if (trailerId != null) {
+                                // 2. Navigate to Player
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => TrailerPlayerScreen(videoId: trailerId)),
+                                );
+                              } else {
+                                // 3. Show error if no trailer found
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("No trailer available for this movie"),
+                                    duration: Duration(seconds: 2),
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                          icon: const Icon(Icons.play_circle_fill, size: 28),
+                          label: const Text("Watch Trailer", style: TextStyle(fontSize: 18)),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            side: const BorderSide(color: Colors.white, width: 2),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: const StadiumBorder(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12), // Space between buttons
                   // --- THE WATCHLIST BUTTON ---
                   Center(
                     child: ConstrainedBox(

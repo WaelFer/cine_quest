@@ -1,9 +1,17 @@
 import 'package:cine_quest/main_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // <--- ADDED THIS IMPORT
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
+  // 1. Initialize bindings first (required before calling SystemChrome)
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 2. GLOBAL RESET: Pass an empty list to clear any previous orientation locks.
+  // This tells the OS: "Let the user rotate the screen freely."
+  SystemChrome.setPreferredOrientations([]);
+
   runApp(const ProviderScope(child: CineQuestApp()));
 }
 
