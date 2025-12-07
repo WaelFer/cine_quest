@@ -54,4 +54,31 @@ class ApiService {
       throw Exception('Error: $e');
     }
   }
+
+  Future<List<dynamic>> getFilteredMovies({String? genreId, String? year}) async {
+    // Start with the base discover URL
+    String urlString = '$_baseUrl/discover/movie?api_key=$_apiKey&sort_by=popularity.desc';
+
+    // Append filters if they exist
+    if (genreId != null) {
+      urlString += '&with_genres=$genreId';
+    }
+    if (year != null) {
+      urlString += '&primary_release_year=$year';
+    }
+
+    final Uri url = Uri.parse(urlString);
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['results'];
+      } else {
+        throw Exception('Failed to filter movies');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
 }
