@@ -10,6 +10,7 @@ CineQuest is a responsive mobile application developed in Flutter that allows us
 ## Features
 * **Trending & Discover:** Displays a weekly updated list of popular films. Users can **filter movies by Genre and Year** using an interactive bottom sheet.
 * **Smart Search:** Features "Instant Search" (debounced) that fetches results as you type and automatically **sorts them by highest rating**.
+* **Video Trailers:** Users can watch official YouTube trailers directly within the app using a fully integrated video player with fullscreen support.
 * **Detailed View:** Shows high-quality posters, ratings, release dates, and synopses with graceful error handling for missing images.
 * **Watchlist:** A persistent "Favorites" list managed with Riverpod and Shared Preferences.
 * **Responsive Design:** Adapts the grid layout automatically for mobile (2 columns) and tablet/landscape (4 columns).
@@ -18,11 +19,13 @@ CineQuest is a responsive mobile application developed in Flutter that allows us
 
 ## User Experience (UX)
 The app features a dark-themed, cinematic interface.
-1.  **Browsing:** Users start on the Home tab. They can scroll through trending movies or tap the **Filter icon** to find specific genres (e.g., Sci-Fi from 2023).
-2.  **Searching:** The Search tab offers a "Type-to-Search" experience where high-rated results appear instantly without needing to press enter.
+1.  **Browsing:** Users start on the Home tab. They can scroll through trending movies or tap the **Filter icon** to find specific genres.
+2.  **Searching:** The Search tab offers a "Type-to-Search" experience where high-rated results appear instantly.
 3.  **Details:** Tapping any movie card triggers a smooth transition to the Detail Screen.
-4.  **Saving:** On the Detail Screen, the "Add to Watchlist" button provides instant visual feedback and saves the selection.
-5.  **Reviewing:** The Watchlist tab displays all saved movies, which remain available even after restarting the app.
+4.  **Trailers:** Users can tap **"Watch Trailer"** to instantly play the official HD trailer in a native video player without leaving the app.
+5.  **Saving:** The "Add to Watchlist" button provides instant visual feedback and saves the selection to disk.
+6.  **Reviewing:** The Watchlist tab displays all saved movies, which remain available even after restarting the app.
+
 
 ## Technology Stack
 * **Framework:** Flutter & Dart
