@@ -19,6 +19,7 @@ class DetailScreen extends ConsumerWidget {
         ? 'https://image.tmdb.org/t/p/w500$posterPath'
         : 'https://via.placeholder.com/500x750';
 
+    // Use backdrop if available, otherwise fall back to poster
     final backdropUrl = backdropPath != null ? 'https://image.tmdb.org/t/p/w780$backdropPath' : posterUrl;
 
     // 2. WATCH THE STATE
@@ -40,8 +41,25 @@ class DetailScreen extends ConsumerWidget {
                   height: 300,
                   width: double.infinity,
                   fit: BoxFit.cover,
+                  // Show a solid dark color while loading
                   placeholder: (context, url) => Container(color: Colors.grey[900]),
+                  // --- NEW: Better Error UI ---
+                  errorWidget: (context, url, error) => Container(
+                    color: Colors.grey[900],
+                    child: const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.movie_creation_outlined, color: Colors.white24, size: 60),
+                          SizedBox(height: 8),
+                          Text("Image not available", style: TextStyle(color: Colors.white38)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // ---------------------------
                 ),
+                // Gradient for text readability
                 Positioned.fill(
                   child: Container(
                     decoration: const BoxDecoration(
@@ -49,6 +67,7 @@ class DetailScreen extends ConsumerWidget {
                         colors: [Colors.black, Colors.transparent],
                         begin: Alignment.bottomCenter,
                         end: Alignment.topCenter,
+                        stops: [0.0, 0.6], // Tweak gradient to not hide the error message too much
                       ),
                     ),
                   ),
@@ -89,9 +108,10 @@ class DetailScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 20),
 
+                  // --- THE WATCHLIST BUTTON ---
                   Center(
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 400), // Limits width on big screens
+                      constraints: const BoxConstraints(maxWidth: 400),
                       child: SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
